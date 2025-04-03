@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import {
   Calendar,
@@ -11,8 +11,10 @@ import {
   Search,
   Settings
 } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 
+import logo from '@/assets/images/logo.png';
 import {
   Sidebar as SCN_Sidebar,
   SidebarContent,
@@ -58,15 +60,33 @@ const links: TLink[] = [
 ];
 
 export default function Sidebar() {
-  const { isMobile } = useSidebar();
+  const { isMobile, state } = useSidebar();
+  const isExpanded = useMemo(() => state === 'expanded', [state]);
 
   return (
     <SCN_Sidebar side={isMobile ? 'right' : 'left'} collapsible='icon'>
-      <SidebarHeader className='h-16'>
-        <div className='flex items-center'>
-          <span className='text-3xl [transform:_rotateY(180deg)]'>L</span>
-          <span className='text-3xl font-bold text-primary'>Hedger</span>
-          <span className='text-3xl'>AI</span>
+      <SidebarHeader className='h-16 p-0'>
+        <div className='flex h-full items-center gap-x-2 p-2'>
+          <Image
+            src={logo.src}
+            width={isExpanded ? 48 : 32}
+            height={isExpanded ? 48 : 32}
+            alt='logo'
+            className={cn('size-8 transition-size', { 'size-12': isExpanded })}
+          />
+
+          <div
+            className={cn(
+              'pointer-events-none flex size-0 items-center opacity-0 transition-opacity duration-0',
+              {
+                'pointer-events-auto size-fit opacity-100 duration-700': isExpanded
+              }
+            )}
+          >
+            <span className='text-3xl [transform:_rotateY(180deg)]'>L</span>
+            <span className='text-3xl font-bold'>Hedger</span>
+            <span className='text-3xl'>AI</span>
+          </div>
         </div>
       </SidebarHeader>
       <SidebarSeparator />
