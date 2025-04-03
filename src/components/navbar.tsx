@@ -1,8 +1,7 @@
 import React from 'react';
 
-import { Wallet } from '@coinbase/onchainkit/wallet';
-
 import ThemeToggle from './ui/theme-toggle';
+import Wallet from './wallet';
 
 export default function Navbar() {
   return (

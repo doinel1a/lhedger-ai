@@ -10,6 +10,7 @@ import config from '_config';
 import { Analytics } from '@vercel/analytics/react';
 
 import Footer from '@/components/footer';
+import WithSupportedChains from '@/components/hoc/with-supported-chains';
 import Navbar from '@/components/navbar';
 import RootProvider from '@/components/providers/root';
 import { Toaster } from '@/components/ui/sonner';
@@ -31,11 +32,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en' suppressHydrationWarning>
       <body>
         <RootProvider>
-          <div className='grid min-h-[100dvh] grid-rows-[auto_1fr_auto]'>
-            <Navbar />
-            {children}
-            <Footer />
-          </div>
+          <WithSupportedChains>
+            <div className='grid min-h-[100dvh] grid-rows-[auto_1fr_auto]'>
+              <Navbar />
+              {children}
+              <Footer />
+            </div>
+          </WithSupportedChains>
 
           <Analytics />
           <Toaster richColors closeButton />
