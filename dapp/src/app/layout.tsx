@@ -13,6 +13,8 @@ import Footer from '@/components/footer';
 import WithSupportedChains from '@/components/hoc/with-supported-chains';
 import Navbar from '@/components/navbar';
 import RootProvider from '@/components/providers/root';
+import { Sidebar } from '@/components/sidebar';
+import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/sonner';
 
 export const metadata: Metadata = {
@@ -32,13 +34,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en' suppressHydrationWarning>
       <body>
         <RootProvider>
-          <WithSupportedChains>
-            <div className='grid min-h-[100dvh] grid-rows-[auto_1fr_auto]'>
-              <Navbar />
-              {children}
-              <Footer />
-            </div>
-          </WithSupportedChains>
+          <SidebarProvider>
+            <WithSupportedChains>
+              <Sidebar />
+
+              <SidebarInset>
+                <div className='grid min-h-[100dvh] grid-rows-[auto_1fr_auto]'>
+                  <Navbar />
+                  {children}
+                  <Footer />
+                </div>
+              </SidebarInset>
+            </WithSupportedChains>
+          </SidebarProvider>
 
           <Analytics />
           <Toaster richColors closeButton />
