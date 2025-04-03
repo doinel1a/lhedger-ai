@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 
 import { aaveBorrowTool, aaveDepositTool } from '@/lib/agents/tools';
 
-export default async function handler(req: NextRequest) {
+export async function POST(req: NextRequest) {
   const body = await req.json();
   const { prompt } = body as { prompt: string };
   if (!prompt) {
@@ -35,5 +35,3 @@ export default async function handler(req: NextRequest) {
     }
   );
 }
-
-export { handler as POST };
