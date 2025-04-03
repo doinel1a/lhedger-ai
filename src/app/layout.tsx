@@ -10,7 +10,6 @@ import config from '_config';
 import { Analytics } from '@vercel/analytics/react';
 
 import Footer from '@/components/footer';
-import GithubCorner from '@/components/github-corner';
 import Navbar from '@/components/navbar';
 import RootProvider from '@/components/providers/root';
 import { Toaster } from '@/components/ui/sonner';
@@ -36,11 +35,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             <Navbar />
             {children}
             <Footer />
-
-            <GithubCorner
-              title='Get started on GitHub'
-              url='https://github.com/doinel1a/next-ts-web3-evm'
-            />
           </div>
 
           <Analytics />

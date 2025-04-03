@@ -1,11 +1,9 @@
 import React from 'react';
 
-import Counter from '@/components/counter';
-
 export default function Home() {
   return (
     <main className='flex h-full w-full flex-col items-center justify-center'>
-      <Counter />
+      <h1 className='text-2xl font-bold'>Hello, World!</h1>
     </main>
   );
 }
