@@ -10,6 +10,10 @@ const nextConfig = {
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true
+  },
+  webpack: (config: { externals: string[] }) => {
+    config.externals.push('pino-pretty', 'lokijs', 'encoding');
+    return config;
   }
 } satisfies NextConfig;
 

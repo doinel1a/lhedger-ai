@@ -19,6 +19,7 @@ export const env = createEnv({
    */
   server: {
     // SERVER_VAR: z.string(),
+    TOKEN_METRICS_API_KEY: z.string(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development')
   },
 
@@ -30,6 +31,7 @@ export const env = createEnv({
     // client
     NEXT_PUBLIC_ONCHAINKIT_API_KEY: process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY,
     // server
+    TOKEN_METRICS_API_KEY: process.env.TOKEN_METRICS_API_KEY,
     NODE_ENV: process.env.NODE_ENV
   },
   /**
