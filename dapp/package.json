@@ -26,6 +26,7 @@
   "dependencies": {
     "@coinbase/onchainkit": "^0.38.4",
     "@heroui/button": "^2.2.16",
+    "@heroui/input": "^2.4.16",
     "@heroui/skeleton": "^2.2.10",
     "@heroui/system": "^2.4.12",
     "@heroui/theme": "^2.4.12",
