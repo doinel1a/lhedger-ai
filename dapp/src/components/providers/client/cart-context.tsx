@@ -8,7 +8,7 @@ export type TToken = {
   symbol: string;
   logo?: string;
   price: number;
-  categories: string[];
+  categories?: string[];
   exchanges: string[];
 };
 

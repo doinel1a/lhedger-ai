@@ -22,6 +22,8 @@ print("✅ Loaded successfully")
 # For the portfolio endpoint, we still need the available token names from the OHLCV data.
 available_tokens = ohlcv["TOKEN_NAME"].unique().tolist()
 
+import re
+
 @app.route('/supported-tokens', methods=['GET'])
 def supported_tokens():
     try:
@@ -31,8 +33,15 @@ def supported_tokens():
         with open("aerodrome_uniswap_tokens.json", "r", encoding="utf-8") as f:
             tokens = json.load(f)
 
-        # Filter tokens so only those in the parquet remain
-        filtered_tokens = [t for t in tokens if t["TOKEN_NAME"] in available_tokens]
+        # Filter tokens so:
+        # 1) the token name is in 'available_tokens' (from parquet), AND
+        # 2) the token symbol is purely alphanumeric
+        filtered_tokens = []
+        for t in tokens:
+            if t["TOKEN_NAME"] in available_tokens:
+                sym = t.get("TOKEN_SYMBOL", "")
+                if re.match(r'^[A-Za-z0-9]+$', sym):
+                    filtered_tokens.append(t)
 
         # Paginate
         start_idx = (page - 1) * page_size

@@ -271,7 +271,7 @@ export default async function InvestPage({ searchParams }: TInvestPage) {
                       symbol: row.TOKEN_SYMBOL,
                       logo: row.logo,
                       price: row.CURRENT_PRICE,
-                      categories: row.CATEGORY_LIST.map((category) => category.category_name),
+                      categories: row.CATEGORY_LIST?.map((category) => category.category_name),
                       exchanges: row.EXCHANGE_LIST.map((exchange) => exchange.exchange_name)
                     }}
                   />
