@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
 
     const res = await fetch(url, {
       headers: {
-        api_key: `${env.TOKENMETRICS_API_KEY}`,
+        api_key: `${env.TOKEN_METRICS_API_KEY}`,
         'Content-Type': 'application/json',
         accept: 'application/json'
       }
