@@ -9,7 +9,6 @@ import type { Metadata, Viewport } from 'next';
 import config from '_config';
 import { Analytics } from '@vercel/analytics/react';
 
-import Footer from '@/components/footer';
 import WithSupportedChains from '@/components/hoc/with-supported-chains';
 import Navbar from '@/components/navbar';
 import RootProvider from '@/components/providers/root';
@@ -42,7 +41,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 <div className='grid min-h-[100dvh] grid-rows-[auto_1fr_auto]'>
                   <Navbar />
                   <div className='h-full w-full p-2.5 md:p-5'>{children}</div>
-                  <Footer />
                 </div>
               </SidebarInset>
             </WithSupportedChains>
