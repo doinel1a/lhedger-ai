@@ -9,7 +9,6 @@ export default function Navbar() {
     <header className='flex h-16 w-full items-center justify-between border-b border-border px-5'>
       <SidebarTrigger />
       <div className='flex items-center gap-x-5'>
-        <Wallet />
         <ThemeToggle />
       </div>
     </header>

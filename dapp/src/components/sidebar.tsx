@@ -2,15 +2,6 @@
 
 import React, { useMemo } from 'react';
 
-import {
-  Calendar,
-  ChartNoAxesCombined,
-  CircleDollarSign,
-  Home,
-  Inbox,
-  Search,
-  Settings
-} from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
 
@@ -18,9 +9,9 @@ import logo from '@/assets/images/logo.png';
 import {
   Sidebar as SCN_Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
   SidebarMenuButton,
@@ -28,12 +19,12 @@ import {
   SidebarSeparator,
   useSidebar
 } from '@/components/ui/sidebar';
-import useActivePath from '@/hooks/use-active-route';
 import useActiveRoute from '@/hooks/use-active-route';
 import { routes } from '@/lib/constants/routes';
 import { cn } from '@/lib/utils';
 
 import LucideIcons, { TLucideIconName } from './lucide-icons';
+import Wallet from './wallet';
 
 type TLink = {
   title: string;
@@ -100,12 +91,17 @@ export default function Sidebar() {
                   title={link.title}
                   href={link.href}
                   iconName={link.iconName}
+                  isSidebarExpanded={isExpanded}
                 />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
+
+      <SidebarFooter>
+        <Wallet isSidebarExpanded={isExpanded} />
+      </SidebarFooter>
     </SCN_Sidebar>
   );
 }
@@ -114,15 +110,17 @@ type TSidebarItem = {
   title: string;
   href: string;
   iconName: TLucideIconName;
+  isSidebarExpanded: boolean;
 };
 
-function SidebarItem({ title, href, iconName }: TSidebarItem) {
+function SidebarItem({ title, href, iconName, isSidebarExpanded }: TSidebarItem) {
   const isRouteActive = useActiveRoute(href);
 
   return (
     <SidebarMenuItem
       className={cn('rounded-md', {
-        'bg-sidebar-accent text-sidebar-accent-foreground': isRouteActive
+        'bg-sidebar-accent text-sidebar-accent-foreground': isRouteActive,
+        'flex items-center justify-center': !isSidebarExpanded
       })}
     >
       <SidebarMenuButton asChild>
