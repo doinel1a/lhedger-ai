@@ -123,7 +123,7 @@ function SidebarItem({ title, href, iconName, isSidebarExpanded }: TSidebarItem)
         'flex items-center justify-center': !isSidebarExpanded
       })}
     >
-      <SidebarMenuButton asChild>
+      <SidebarMenuButton tooltip={title} asChild>
         <Link href={href}>
           <LucideIcons name={iconName} />
           <span>{title}</span>
