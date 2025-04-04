@@ -3,6 +3,8 @@ import React from 'react';
 import { DataPoint, Scatterplot } from '@/components/scatter/scatter-plot';
 import { env } from '@/env';
 
+export const dynamic = 'force-dynamic';
+
 export default async function CheckoutPage() {
   const scatterDataFetch = await fetch(`${env.PYTHON_BACKEND_URL}/markowitz-scatter`, {
     method: 'POST',
