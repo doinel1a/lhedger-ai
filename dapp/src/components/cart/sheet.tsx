@@ -4,6 +4,8 @@ import React from 'react';
 
 import { Button } from '@heroui/button';
 
+import { routes } from '@/lib/constants/routes';
+
 import LucideIcons from '../lucide-icons';
 import { useCart } from '../providers/client/cart-context';
 import { Badge } from '../ui/badge';
@@ -19,11 +21,9 @@ export default function CartSheet() {
   return (
     <Sheet>
       <SheetTrigger asChild>
-        <Button variant='bordered' className='relative' isIconOnly>
+        <Button variant='bordered' className='relative overflow-visible' isIconOnly>
           {itemCount > 0 && (
-            <Badge className='g-6 absolute -right-2 -top-2 h-6 w-6 rounded-full p-2'>
-              {itemCount}
-            </Badge>
+            <Badge className='absolute -right-2 -top-2 h-6 w-6 rounded-full p-2'>{itemCount}</Badge>
           )}
           <LucideIcons name='ShoppingCart' className='h-4 w-4' />
         </Button>
@@ -34,16 +34,21 @@ export default function CartSheet() {
         </SheetHeader>
         <Separator />
         {itemCount > 0 ? (
-          <div className='flex flex-1 flex-col gap-5 overflow-hidden'>
+          <div className='flex flex-1 flex-col justify-between gap-5 overflow-hidden'>
             <ScrollArea className='h-full'>
-              <div className='flex flex-col gap-5 pr-6'>
+              <div className='flex flex-col gap-5 divide-y-2 pr-6'>
                 {cartItems.map((item) => (
-                  <div key={item.token.id} className='space-y-3'>
+                  <div key={item.token.id} className='space-y-3 pt-4'>
                     <CartItem item={item} />
                   </div>
                 ))}
               </div>
             </ScrollArea>
+
+            <Button color='primary' as='a' href={routes.checkout} className='flex gap-x-1'>
+              <LucideIcons name='HandCoins' className='h-4 w-4' />
+              Checkout
+            </Button>
           </div>
         ) : (
           <p className='text-lg font-semibold text-muted-foreground'>No items in cart</p>

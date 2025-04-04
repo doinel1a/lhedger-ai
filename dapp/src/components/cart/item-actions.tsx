@@ -18,10 +18,10 @@ export default function CartItemActions({ item }: TCartItemActions) {
   }, [item, removeFromCart]);
 
   return (
-    <div className='flex items-center space-x-1'>
-      <Button variant='ghost' color='danger' className='size-9' isIconOnly onPress={onRemoveClick}>
-        <LucideIcons name='Trash' className='h-4 w-4' />
-      </Button>
+    <div className='absolute right-0 top-0 flex items-center space-x-1 opacity-0 transition-opacity group-hover:opacity-100'>
+      <button onClick={onRemoveClick}>
+        <LucideIcons name='Trash' className='h-4 w-4 text-danger-500' />
+      </button>
     </div>
   );
 }

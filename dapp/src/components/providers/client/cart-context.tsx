@@ -8,9 +8,8 @@ export type TToken = {
   symbol: string;
   logo?: string;
   price: number;
-
-  // category: string[];
-  // exchange: string[];
+  categories: string[];
+  exchanges: string[];
 };
 
 export type TCartItem = {
