@@ -31,17 +31,18 @@ def supported_tokens():
         with open("aerodrome_uniswap_tokens.json", "r", encoding="utf-8") as f:
             tokens = json.load(f)
 
+        # Filter tokens so only those in the parquet remain
+        filtered_tokens = [t for t in tokens if t["TOKEN_NAME"] in available_tokens]
+
+        # Paginate
         start_idx = (page - 1) * page_size
         end_idx = start_idx + page_size
-
-        # Slice the tokens
-        tokens_page = tokens[start_idx:end_idx]
+        tokens_page = filtered_tokens[start_idx:end_idx]
 
         return jsonify(tokens_page)
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 @app.route('/portfolio', methods=['POST'])
 def optimize():
