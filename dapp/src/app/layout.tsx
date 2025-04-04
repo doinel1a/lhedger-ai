@@ -33,7 +33,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang='en' suppressHydrationWarning>
       <body>
         <RootProvider>
-          <SidebarProvider>
+          <SidebarProvider defaultOpen={false}>
             <WithSupportedChains>
               <Sidebar />
 

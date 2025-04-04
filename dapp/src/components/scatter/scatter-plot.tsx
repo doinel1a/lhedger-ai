@@ -4,6 +4,8 @@ import { useState } from 'react';
 
 import * as d3 from 'd3';
 
+import { TPortfolio } from '@/app/checkout/page';
+
 import { AxisBottom } from './axis-bottom';
 import { AxisLeft } from './axis-left';
 import { InteractionData, Tooltip } from './tooltip';
@@ -27,9 +29,10 @@ type ScatterplotProps = {
   width: number;
   height: number;
   data: DataPoint[];
+  onPortfolioSelect: (portfolio: TPortfolio) => void;
 };
 
-export const Scatterplot = ({ width, height, data }: ScatterplotProps) => {
+export const Scatterplot = ({ width, height, data, onPortfolioSelect }: ScatterplotProps) => {
   const boundsWidth = width - MARGIN.right - MARGIN.left;
   const boundsHeight = height - MARGIN.top - MARGIN.bottom;
 
@@ -86,6 +89,7 @@ export const Scatterplot = ({ width, height, data }: ScatterplotProps) => {
             })
           }
           onMouseLeave={() => setHovered(null)}
+          onClick={() => onPortfolioSelect(d.portfolio)}
         />
       );
     } else {
@@ -108,6 +112,7 @@ export const Scatterplot = ({ width, height, data }: ScatterplotProps) => {
             })
           }
           onMouseLeave={() => setHovered(null)}
+          onClick={() => onPortfolioSelect(d.portfolio)}
         />
       );
     }

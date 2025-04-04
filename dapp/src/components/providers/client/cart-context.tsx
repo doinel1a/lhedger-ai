@@ -50,18 +50,20 @@ export const CartProvider = ({ children }: TProperties) => {
   const [data, setData] = useState<TToken[]>([]);
 
   useEffect(() => {
-    const fetchTokenData = async () => {
+    const savedCart = localStorage.getItem('cart');
+    if (savedCart) {
       try {
-        const response = await fetch('https://fakestoreapi.com/products');
-        const tokens = (await response.json()) as TToken[];
-        setData(tokens);
+        const parsedCart = JSON.parse(savedCart) as TCartItem[];
+        setCartItems(parsedCart);
       } catch (error) {
-        console.error('CLIENT ERROR | Failed to fetch token data', error);
+        console.error('CLIENT ERROR | Failed to parse cart from localStorage', error);
       }
-    };
-
-    fetchTokenData();
+    }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem('cart', JSON.stringify(cartItems));
+  }, [cartItems]);
 
   const addToCart = (token: TToken) => {
     const existingCartItemIndex = cartItems.findIndex((item) => item.token.id === token.id);
