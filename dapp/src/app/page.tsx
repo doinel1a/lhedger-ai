@@ -32,6 +32,8 @@ export default async function Home() {
   if (!marketMetrics.ok || !marketSentiment.ok) {
     return notFound();
   }
+  console.log('marketMetrics', marketMetrics);
+  console.log('marketSentiment', marketSentiment);
 
   const marketMetricsResponse = await marketMetrics.json();
   const marketSentimentResponse = await marketSentiment.json();
@@ -68,33 +70,29 @@ export default async function Home() {
   }
 
   return (
-    <main className='grid h-full w-full grid-rows-2 gap-5'>
-      <div className='w-full rounded-md border'>TOP 100 TOKENS BY MARKET CAP</div>
-
-      <div className='grid w-full grid-cols-3 gap-5'>
-        <div className='col-span-3 h-full lg:col-span-2'>
-          <CryptoMarketCapChart data={marketMetricsResponse.data.reverse() as TMarketCapData[]} />
-        </div>
-
-        <Card className='col-span-3 lg:col-span-1'>
-          <CardHeader>
-            <CardTitle>Crypto Fear and Greed Index</CardTitle>
-          </CardHeader>
-          <CardContent className='flex flex-col gap-5'>
-            <CryptoFearAndGreedChart
-              title='News'
-              description={marketSentimentResponse.data.news.summary}
-              value={marketSentimentResponse.data.news.grade}
-            />
-
-            <CryptoFearAndGreedChart
-              title='Twitter'
-              description={marketSentimentResponse.data.twitter.summary}
-              value={marketSentimentResponse.data.twitter.grade}
-            />
-          </CardContent>
-        </Card>
+    <main className='flex h-full w-full gap-5'>
+      <div className='w-2/3'>
+        <CryptoMarketCapChart data={marketMetricsResponse.data.reverse() as TMarketCapData[]} />
       </div>
+
+      <Card className='h-fit w-1/3'>
+        <CardHeader>
+          <CardTitle>Crypto Fear and Greed Index</CardTitle>
+        </CardHeader>
+        <CardContent className='flex flex-col gap-5'>
+          <CryptoFearAndGreedChart
+            title='News'
+            description={marketSentimentResponse.data.news.summary}
+            value={marketSentimentResponse.data.news.grade}
+          />
+
+          <CryptoFearAndGreedChart
+            title='Twitter'
+            description={marketSentimentResponse.data.twitter.summary}
+            value={marketSentimentResponse.data.twitter.grade}
+          />
+        </CardContent>
+      </Card>
     </main>
   );
 }
@@ -102,6 +100,6 @@ export default async function Home() {
 function generateEndDate(year: number) {
   const todayDate = new Date();
   const todayMonth = String(todayDate.getMonth() + 1).padStart(2, '0');
-  const todayDay = String(todayDate.getDate()).padStart(2, '0');
+  const todayDay = String(todayDate.getDate() - 1).padStart(2, '0');
   return `${year}-${todayMonth}-${todayDay}`;
 }
