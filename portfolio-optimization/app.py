@@ -4,8 +4,10 @@ from flask import Flask, request, jsonify
 import numpy as np
 import pandas as pd
 import json
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # ========================
 # Load cached OHLCV parquet
@@ -23,9 +25,21 @@ available_tokens = ohlcv["TOKEN_NAME"].unique().tolist()
 @app.route('/supported-tokens', methods=['GET'])
 def supported_tokens():
     try:
+        page = request.args.get('page', default=1, type=int)
+        page_size = request.args.get('page_size', default=20, type=int)
+
         with open("aerodrome_uniswap_tokens.json", "r", encoding="utf-8") as f:
             tokens = json.load(f)
-        return jsonify(tokens)
+
+        total_tokens = len(tokens)
+        start_idx = (page - 1) * page_size
+        end_idx = start_idx + page_size
+
+        # Slice the tokens
+        tokens_page = tokens[start_idx:end_idx]
+
+        return jsonify(tokens_page)
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
