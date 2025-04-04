@@ -2,3 +2,4 @@ flask
 numpy
 tmai_api
 pandas
+flask_cors
