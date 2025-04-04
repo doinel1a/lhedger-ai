@@ -6,8 +6,8 @@ import tmai_api
 API_KEY = "API-KEY"
 INPUT_JSON = "aerodrome_uniswap_tokens.json"
 OUTPUT_PARQUET = "aerodrome_uniswap_ohlcv.parquet"
-START_DATE = "2024-04-01"
-END_DATE = "2025-04-01"
+START_DATE = "2025-01-01"
+END_DATE = "2025-04-04"
 
 # === INIT TM CLIENT ===
 client = tmai_api.TokenMetricsClient(api_key=API_KEY)
@@ -22,7 +22,7 @@ token_ids = [str(t["TOKEN_ID"]) for t in tokens]
 all_data = []
 
 try:
-    df = client.daily_ohlcv.get_dataframe(
+    df = client.hourly_ohlcv.get_dataframe(
         token_id=",".join(token_ids),
         startDate=START_DATE,
         endDate=END_DATE

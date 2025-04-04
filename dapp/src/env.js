@@ -19,8 +19,9 @@ export const env = createEnv({
    */
   server: {
     // SERVER_VAR: z.string(),
-    TOKEN_METRICS_API_KEY: z.string(),
-    NODE_ENV: z.enum(['development', 'test', 'production']).default('development')
+    NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+    PYTHON_BACKEND_URL: z.string().url().default('http://localhost:5000'),
+    TOKENMETRICS_API_KEY: z.string()
   },
 
   /**
@@ -31,8 +32,9 @@ export const env = createEnv({
     // client
     NEXT_PUBLIC_ONCHAINKIT_API_KEY: process.env.NEXT_PUBLIC_ONCHAINKIT_API_KEY,
     // server
-    TOKEN_METRICS_API_KEY: process.env.TOKEN_METRICS_API_KEY,
-    NODE_ENV: process.env.NODE_ENV
+    NODE_ENV: process.env.NODE_ENV,
+    PYTHON_BACKEND_URL: process.env.PYTHON_BACKEND_URL,
+    TOKENMETRICS_API_KEY: process.env.TOKENMETRICS_API_KEY
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

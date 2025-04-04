@@ -11,12 +11,18 @@ import {
   WalletDropdown
 } from '@coinbase/onchainkit/wallet';
 
-export default function Wallet() {
+import { cn } from '@/lib/utils';
+
+type TWallet = {
+  isSidebarExpanded: boolean;
+};
+
+export default function Wallet({ isSidebarExpanded }: TWallet) {
   return (
-    <CoinbaseWallet className='h-10'>
-      <ConnectWallet className='flex h-10 items-center justify-center'>
-        <Avatar className='h-6' />
-        <Name className='text-base' />
+    <CoinbaseWallet className={cn('w-full', { 'w-10': !isSidebarExpanded })}>
+      <ConnectWallet className='flex h-10 w-full items-center justify-center'>
+        <Avatar className='size-[18px]' />
+        {isSidebarExpanded && <Name className='text-base' />}
       </ConnectWallet>
       <WalletDropdown>
         <WalletAdvancedWalletActions />
