@@ -3,6 +3,7 @@
 from flask import Flask, request, jsonify
 import numpy as np
 import pandas as pd
+import json
 
 app = Flask(__name__)
 
@@ -10,19 +11,26 @@ app = Flask(__name__)
 # Load cached OHLCV parquet
 # ========================
 
-DATA_PATH = "top100_ohlcv.parquet"
+DATA_PATH = "aerodrome_uniswap_ohlcv.parquet"
 print("📦 Loading cached OHLCV data...")
 ohlcv = pd.read_parquet(DATA_PATH)
 print("✅ Loaded successfully")
 
-# List of available tokens in the parquet
+
+# For the portfolio endpoint, we still need the available token names from the OHLCV data.
 available_tokens = ohlcv["TOKEN_NAME"].unique().tolist()
 
 @app.route('/supported-tokens', methods=['GET'])
 def supported_tokens():
-    return jsonify({
-        "supported_tokens": available_tokens
-    })
+    try:
+        with open("aerodrome_uniswap_tokens.json", "r", encoding="utf-8") as f:
+            tokens = json.load(f)
+        return jsonify(tokens)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+
 
 @app.route('/portfolio', methods=['POST'])
 def optimize():
