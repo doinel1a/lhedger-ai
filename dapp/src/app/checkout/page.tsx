@@ -12,10 +12,9 @@ export default async function CheckoutPage() {
       'Content-Type': 'application/json'
     },
     body: JSON.stringify({
-      assets: [37939, 38135, 30747]
+      assets: ['Sushi', 'Coinbase Wrapped Staked ETH', 'Tower']
     })
   });
   const scatterData = (await scatterDataFetch.json()) as DataPoint[];
-  console.log(scatterData);
   return <Scatterplot width={800} height={600} data={scatterData} />;
 }
