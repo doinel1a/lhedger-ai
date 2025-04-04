@@ -7,6 +7,13 @@ import './src/env.js';
 import type { NextConfig } from 'next';
 
 const nextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        hostname: 's2.coinmarketcap.com'
+      }
+    ]
+  },
   reactStrictMode: true,
   eslint: {
     ignoreDuringBuilds: true

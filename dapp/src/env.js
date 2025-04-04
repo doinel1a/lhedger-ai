@@ -21,7 +21,8 @@ export const env = createEnv({
     // SERVER_VAR: z.string(),
     NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
     PYTHON_BACKEND_URL: z.string().url(),
-    TOKEN_METRICS_API_KEY: z.string()
+    TOKEN_METRICS_API_KEY: z.string(),
+    COIN_MARKET_CAP_API_KEY: z.string()
   },
 
   /**
@@ -34,7 +35,8 @@ export const env = createEnv({
     // server
     NODE_ENV: process.env.NODE_ENV,
     PYTHON_BACKEND_URL: process.env.PYTHON_BACKEND_URL,
-    TOKEN_METRICS_API_KEY: process.env.TOKEN_METRICS_API_KEY
+    TOKEN_METRICS_API_KEY: process.env.TOKEN_METRICS_API_KEY,
+    COIN_MARKET_CAP_API_KEY: process.env.COIN_MARKET_CAP_API_KEY
   },
   /**
    * Run `build` or `dev` with `SKIP_ENV_VALIDATION` to skip env validation.

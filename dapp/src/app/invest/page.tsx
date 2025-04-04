@@ -1,7 +1,8 @@
-import { ArrowDown, ArrowRight, ArrowUp, ShoppingCart } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUp } from 'lucide-react';
 import millify from 'millify';
+import Image from 'next/image';
 
-import { Button } from '@/components/ui/button';
+import AddTokenToCart from '@/components/cart/add-token-to-cart';
 import {
   Table,
   TableBody,
@@ -11,8 +12,9 @@ import {
   TableRow
 } from '@/components/ui/table';
 import { env } from '@/env';
+import { tokenMetrics } from '@/lib/constants/routes';
 
-import AddTokenToCart from '../../components/cart/add-token-to-cart';
+export const dynamic = 'force-dynamic';
 
 interface ExchangeItem {
   exchange_id: string;
@@ -37,16 +39,17 @@ export interface TokenData {
   contract_address: ContractAddressMap;
 }
 
-export const dynamic = 'force-dynamic';
-
 export default async function InvestPage() {
-  const supportedTokensFetch = await fetch(`${env.PYTHON_BACKEND_URL}/supported-tokens?page=${2}`, {
-    method: 'GET'
-  });
+  const supportedTokensRequest = await fetch(
+    `${env.PYTHON_BACKEND_URL}/supported-tokens?page=${1}`
+  );
+  const supportedTokensResponse = (await supportedTokensRequest.json()) as TokenData[];
+  const supportedTokenIds = supportedTokensResponse.map((token) => token.TOKEN_ID);
+  const supportedTokenSymbols = supportedTokensResponse
+    .map((token) => token.TOKEN_SYMBOL)
+    .concat(',');
 
-  const supportedTokens = (await supportedTokensFetch.json()) as TokenData[];
-  const supportedTokenIds = supportedTokens.map((token) => token.TOKEN_ID);
-  const investDataFetch = await fetch(`http://localhost:3000/api/invest-data`, {
+  const investDataPromise = fetch(`http://localhost:3000/api/invest-data`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -55,13 +58,9 @@ export default async function InvestPage() {
       tokenIds: supportedTokenIds
     })
   });
-  const investData = (await investDataFetch.json()) as Array<{
-    TOKEN_ID: number;
-    priceChange24h: number;
-    totalVolume24h: number;
-  }>;
-  const tradingSignalFetch = await fetch(
-    `https://api.tokenmetrics.com/v2/trading-signals?token_id=${supportedTokenIds.join(',')}`,
+
+  const tradingSignalPromise = fetch(
+    `${tokenMetrics.api}/trading-signals?token_id=${supportedTokenIds.join(',')}`,
     {
       headers: {
         api_key: `${env.TOKEN_METRICS_API_KEY}`,
@@ -69,7 +68,34 @@ export default async function InvestPage() {
       }
     }
   );
-  const tradingSignalData = (await tradingSignalFetch.json()) as {
+
+  const priceFPromise = fetch(`${tokenMetrics.api}/price?token_id=${supportedTokenIds.join(',')}`, {
+    headers: {
+      api_key: `${env.TOKEN_METRICS_API_KEY}`,
+      accept: 'application/json'
+    }
+  });
+
+  const tokenLogosPromise = fetch(
+    `https://pro-api.coinmarketcap.com/v2/cryptocurrency/info?symbol=${supportedTokenSymbols}&skip_invalid=true&aux=logo`,
+    {
+      headers: {
+        'X-CMC_PRO_API_KEY': `${env.COIN_MARKET_CAP_API_KEY}`,
+        accept: 'application/json'
+      }
+    }
+  );
+
+  const [investDataResponse, tradingSignalResponse, priceResponse, tokenLogosResponse] =
+    await Promise.all([investDataPromise, tradingSignalPromise, priceFPromise, tokenLogosPromise]);
+
+  const investDataPromise2 = investDataResponse.json() as unknown as Array<{
+    TOKEN_ID: number;
+    priceChange24h: number;
+    totalVolume24h: number;
+  }>;
+
+  const tradingSignalDataPromise = tradingSignalResponse.json() as unknown as {
     data: Array<{
       TOKEN_ID: number;
       TRADING_SIGNAL: -1 | 0 | 1;
@@ -77,30 +103,41 @@ export default async function InvestPage() {
       TM_INVESTOR_GRADE: number;
     }>;
   };
-  const priceFetch = await fetch(
-    `https://api.tokenmetrics.com/v2/price?token_id=${supportedTokenIds.join(',')}`,
-    {
-      headers: {
-        api_key: `${env.TOKEN_METRICS_API_KEY}`,
-        accept: 'application/json'
-      }
-    }
-  );
-  const priceData = (await priceFetch.json()) as {
+
+  const priceDataPromise = priceResponse.json() as unknown as {
     data: Array<{
       TOKEN_ID: number;
       CURRENT_PRICE: number;
     }>;
   };
 
-  const allData = supportedTokens.map((token) => {
+  const tokenLogosResponsePromise = tokenLogosResponse.json() as unknown as {
+    data: Array<{
+      symbol: string;
+      logo: string;
+    }>;
+  };
+
+  const [investData, tradingSignalData, priceData, tokenLogos] = await Promise.all([
+    investDataPromise2,
+    tradingSignalDataPromise,
+    priceDataPromise,
+    tokenLogosResponsePromise
+  ]);
+
+  const allData = supportedTokensResponse.map((token) => {
     const investDataItem = investData.find((item) => item.TOKEN_ID === token.TOKEN_ID);
     const tradingSignalItem = tradingSignalData.data.find(
       (item) => item.TOKEN_ID === token.TOKEN_ID
     );
     const priceDataItem = priceData.data.find((item) => item.TOKEN_ID === token.TOKEN_ID);
+    const tokenMetadata = Object.values(tokenLogos.data)
+      .flat()
+      .find((item) => item.symbol === token.TOKEN_SYMBOL);
+
     return {
       ...token,
+      logo: tokenMetadata?.logo,
       priceChange: investDataItem ? investDataItem.priceChange24h : 0,
       volume: investDataItem ? investDataItem.totalVolume24h : 0,
       TM_TRADER_GRADE: tradingSignalItem ? tradingSignalItem.TM_TRADER_GRADE : 0,
@@ -117,7 +154,7 @@ export default async function InvestPage() {
           <Table>
             <TableHeader className='bg-muted'>
               <TableRow className='border-b hover:bg-muted'>
-                <TableHead className='text-muted-foreground'>#</TableHead>
+                <TableHead className='text-muted-foreground'></TableHead>
                 <TableHead className='text-muted-foreground'>Token Name</TableHead>
                 <TableHead className='text-muted-foreground'>TM Trader Grade</TableHead>
                 <TableHead className='text-muted-foreground'>Current Price</TableHead>
@@ -130,19 +167,32 @@ export default async function InvestPage() {
             <TableBody>
               {allData.map((row) => (
                 <TableRow key={row.TOKEN_ID} className='border-b hover:bg-muted/50'>
-                  <TableCell>{row.TOKEN_ID}</TableCell>
                   <TableCell>
-                    <div className='flex items-center gap-2'>
-                      <div className='flex h-6 w-6 items-center justify-center rounded-full bg-muted text-xs'>
-                        {row.TOKEN_SYMBOL}
-                      </div>
-                      <div>{row.TOKEN_NAME}</div>
-                      <div className='text-muted-foreground'>{row.TOKEN_SYMBOL}</div>
+                    <div className='relative size-8 overflow-hidden'>
+                      {row.logo ? (
+                        <Image
+                          src={row.logo}
+                          alt={row.TOKEN_NAME}
+                          fill
+                          className='absolute object-cover'
+                          loading='lazy'
+                        />
+                      ) : (
+                        <div className='flex size-full items-center justify-center rounded-full bg-muted text-sm text-muted-foreground'>
+                          {row.TOKEN_SYMBOL[0]}
+                        </div>
+                      )}
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    <div className='flex flex-col'>
+                      <span className='text-xs text-muted-foreground'>{row.TOKEN_SYMBOL}</span>
+                      <span className='text-lg font-medium'>{row.TOKEN_NAME}</span>
                     </div>
                   </TableCell>
                   <TableCell>
                     <div
-                      className={`flex w-fit items-center gap-1 rounded px-2 py-1 ${
+                      className={`flex w-24 items-center justify-between rounded-md px-2 py-1 ${
                         row.TM_TRADER_GRADE > 70
                           ? 'bg-green-700/50 text-green-500'
                           : row.TM_TRADER_GRADE === 50
@@ -187,15 +237,13 @@ export default async function InvestPage() {
                   <TableCell>
                     <AddTokenToCart
                       token={{
-                        // @ts-expect-error Will fix later
-                        id: row.symbol,
-                        // @ts-expect-error Will fix later
-                        name: row.name,
-                        // @ts-expect-error Will fix later
-                        symbol: row.symbol,
-                        logo: '',
-                        // @ts-expect-error Will fix later
-                        price: row.price
+                        id: row.TOKEN_SYMBOL,
+                        name: row.TOKEN_NAME,
+                        symbol: row.TOKEN_SYMBOL,
+                        logo: row.logo,
+                        price: row.CURRENT_PRICE,
+                        categories: row.CATEGORY_LIST.map((category) => category.category_name),
+                        exchanges: row.EXCHANGE_LIST.map((exchange) => exchange.exchange_name)
                       }}
                     />
                   </TableCell>
@@ -208,102 +256,3 @@ export default async function InvestPage() {
     </div>
   );
 }
-
-const rows = [
-  {
-    rank: 140,
-    name: 'Pendle',
-    symbol: 'PENDLE',
-    grade: 88.92,
-    gradeChange: 0.15,
-    price: 2.84,
-    priceChange: -12.14,
-    marketCap: '$461.1M',
-    volume: '$188M',
-    signal: 'Bullish'
-  },
-  {
-    rank: 174,
-    name: 'Fartcoin',
-    symbol: 'FARTCOIN',
-    grade: 82.44,
-    gradeChange: 0.2,
-    price: 0.37,
-    priceChange: -31.81,
-    marketCap: '$367.1M',
-    volume: '$217M',
-    signal: 'Bullish'
-  },
-  {
-    rank: 205,
-    name: 'LayerZero',
-    symbol: 'ZRO',
-    grade: 76.52,
-    gradeChange: 5.14,
-    price: 2.6,
-    priceChange: -5.85,
-    marketCap: '$287.1M',
-    volume: '$141M',
-    signal: 'Bullish'
-  },
-  {
-    rank: 107,
-    name: 'Walrus',
-    symbol: 'WAL',
-    grade: 50.0,
-    gradeChange: 0.0,
-    price: 0.53,
-    priceChange: -8.67,
-    marketCap: '$0.7B',
-    volume: '$186M',
-    signal: '-'
-  },
-  {
-    rank: 674,
-    name: 'VICE',
-    symbol: 'VICE',
-    grade: 50.0,
-    gradeChange: 0.0,
-    price: 0.05,
-    priceChange: 34.92,
-    marketCap: '$41.7M',
-    volume: '$1M',
-    signal: '-'
-  },
-  {
-    rank: 448,
-    name: 'Nillion',
-    symbol: 'NIL',
-    grade: 50.0,
-    gradeChange: 0.0,
-    price: 0.42,
-    priceChange: -10.68,
-    marketCap: '$81.8M',
-    volume: '$69M',
-    signal: '-'
-  },
-  {
-    rank: 20,
-    name: 'Sui',
-    symbol: 'SUI',
-    grade: 29.14,
-    gradeChange: 12.33,
-    price: 2.23,
-    priceChange: -10.17,
-    marketCap: '$7.2B',
-    volume: '$2B',
-    signal: 'Bearish'
-  },
-  {
-    rank: 161,
-    name: 'Wormhole',
-    symbol: 'W',
-    grade: 25.95,
-    gradeChange: -0.22,
-    price: 0.09,
-    priceChange: 13.77,
-    marketCap: '$397.9M',
-    volume: '$190M',
-    signal: 'Bearish'
-  }
-];

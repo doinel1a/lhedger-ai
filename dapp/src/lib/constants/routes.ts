@@ -1,7 +1,8 @@
 export const routes = {
   dashboard: '/',
   invest: '/invest',
-  portfolio: '/portfolio'
+  portfolio: '/portfolio',
+  checkout: '/checkout'
 } as const;
 
 export const api = {
