@@ -1,4 +1,4 @@
-#!/Users/urataps/Projects/hack/lhedger-ai/portfolio-optimization/.venv/bin/python3
+#!/home/d1atanasiu/lhedger-ai/portfolio-optimization/.venv/bin/python3
 # -*- coding: utf-8 -*-
 import re
 import sys
