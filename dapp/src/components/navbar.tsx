@@ -1,5 +1,6 @@
 import React from 'react';
 
+import CartSheet from './cart/sheet';
 import { SidebarTrigger } from './ui/sidebar';
 import ThemeToggle from './ui/theme-toggle';
 import Wallet from './wallet';
@@ -9,6 +10,7 @@ export default function Navbar() {
     <header className='flex h-16 w-full items-center justify-between border-b border-border px-5'>
       <SidebarTrigger />
       <div className='flex items-center gap-x-5'>
+        <CartSheet />
         <ThemeToggle />
       </div>
     </header>

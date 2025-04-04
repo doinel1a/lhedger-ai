@@ -10,6 +10,8 @@ import {
   TableRow
 } from '@/components/ui/table';
 
+import AddTokenToCart from '../../components/cart/add-token-to-cart';
+
 export default async function InvestPage() {
   return (
     <div className='min-h-screen bg-background text-foreground'>
@@ -27,7 +29,7 @@ export default async function InvestPage() {
                 <TableHead className='text-muted-foreground'>Market Cap</TableHead>
                 <TableHead className='text-muted-foreground'>24H Vol</TableHead>
                 <TableHead className='text-muted-foreground'>Trading Signal</TableHead>
-                <TableHead className='text-muted-foreground'>Add to Cart</TableHead>
+                <TableHead className='text-muted-foreground'>Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -80,9 +82,15 @@ export default async function InvestPage() {
                     {row.signal || '-'}
                   </TableCell>
                   <TableCell>
-                    <Button className='flex items-center gap-1 bg-primary text-primary-foreground hover:bg-primary/90'>
-                      <ShoppingCart className='h-4 w-4' /> Add to Cart
-                    </Button>
+                    <AddTokenToCart
+                      token={{
+                        id: row.symbol,
+                        name: row.name,
+                        symbol: row.symbol,
+                        logo: '',
+                        price: row.price
+                      }}
+                    />
                   </TableCell>
                 </TableRow>
               ))}
@@ -101,7 +109,7 @@ const rows = [
     symbol: 'PENDLE',
     grade: 88.92,
     gradeChange: 0.15,
-    price: '$2.84',
+    price: 2.84,
     priceChange: -12.14,
     marketCap: '$461.1M',
     volume: '$188M',
@@ -113,7 +121,7 @@ const rows = [
     symbol: 'FARTCOIN',
     grade: 82.44,
     gradeChange: 0.2,
-    price: '$0.37',
+    price: 0.37,
     priceChange: -31.81,
     marketCap: '$367.1M',
     volume: '$217M',
@@ -125,7 +133,7 @@ const rows = [
     symbol: 'ZRO',
     grade: 76.52,
     gradeChange: 5.14,
-    price: '$2.60',
+    price: 2.6,
     priceChange: -5.85,
     marketCap: '$287.1M',
     volume: '$141M',
@@ -137,7 +145,7 @@ const rows = [
     symbol: 'WAL',
     grade: 50.0,
     gradeChange: 0.0,
-    price: '$0.53',
+    price: 0.53,
     priceChange: -8.67,
     marketCap: '$0.7B',
     volume: '$186M',
@@ -149,7 +157,7 @@ const rows = [
     symbol: 'VICE',
     grade: 50.0,
     gradeChange: 0.0,
-    price: '$0.05',
+    price: 0.05,
     priceChange: 34.92,
     marketCap: '$41.7M',
     volume: '$1M',
@@ -161,7 +169,7 @@ const rows = [
     symbol: 'NIL',
     grade: 50.0,
     gradeChange: 0.0,
-    price: '$0.42',
+    price: 0.42,
     priceChange: -10.68,
     marketCap: '$81.8M',
     volume: '$69M',
@@ -173,7 +181,7 @@ const rows = [
     symbol: 'SUI',
     grade: 29.14,
     gradeChange: 12.33,
-    price: '$2.23',
+    price: 2.23,
     priceChange: -10.17,
     marketCap: '$7.2B',
     volume: '$2B',
@@ -185,7 +193,7 @@ const rows = [
     symbol: 'W',
     grade: 25.95,
     gradeChange: -0.22,
-    price: '$0.09',
+    price: 0.09,
     priceChange: 13.77,
     marketCap: '$397.9M',
     volume: '$190M',
