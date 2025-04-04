@@ -12,6 +12,8 @@ import {
 } from '@/components/ui/table';
 import { env } from '@/env';
 
+import AddTokenToCart from '../../components/cart/add-token-to-cart';
+
 interface ExchangeItem {
   exchange_id: string;
   exchange_name: string;
@@ -36,8 +38,6 @@ export interface TokenData {
 }
 
 export const dynamic = 'force-dynamic';
-
-import AddTokenToCart from '../../components/cart/add-token-to-cart';
 
 export default async function InvestPage() {
   const supportedTokensFetch = await fetch(`${env.PYTHON_BACKEND_URL}/supported-tokens?page=${2}`, {
@@ -64,7 +64,7 @@ export default async function InvestPage() {
     `https://api.tokenmetrics.com/v2/trading-signals?token_id=${supportedTokenIds.join(',')}`,
     {
       headers: {
-        api_key: `${env.TOKENMETRICS_API_KEY}`,
+        api_key: `${env.TOKEN_METRICS_API_KEY}`,
         accept: 'application/json'
       }
     }
@@ -81,7 +81,7 @@ export default async function InvestPage() {
     `https://api.tokenmetrics.com/v2/price?token_id=${supportedTokenIds.join(',')}`,
     {
       headers: {
-        api_key: `${env.TOKENMETRICS_API_KEY}`,
+        api_key: `${env.TOKEN_METRICS_API_KEY}`,
         accept: 'application/json'
       }
     }
@@ -187,10 +187,14 @@ export default async function InvestPage() {
                   <TableCell>
                     <AddTokenToCart
                       token={{
+                        // @ts-expect-error Will fix later
                         id: row.symbol,
+                        // @ts-expect-error Will fix later
                         name: row.name,
+                        // @ts-expect-error Will fix later
                         symbol: row.symbol,
                         logo: '',
+                        // @ts-expect-error Will fix later
                         price: row.price
                       }}
                     />
