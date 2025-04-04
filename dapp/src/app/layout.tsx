@@ -41,7 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <SidebarInset>
                 <div className='grid min-h-[100dvh] grid-rows-[auto_1fr_auto]'>
                   <Navbar />
-                  {children}
+                  <div className='h-full w-full p-2.5 md:p-5'>{children}</div>
                   <Footer />
                 </div>
               </SidebarInset>
