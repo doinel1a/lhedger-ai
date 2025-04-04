@@ -10,7 +10,7 @@ import {
   TableRow
 } from '@/components/ui/table';
 
-export default function CryptoTable() {
+export default async function InvestPage() {
   return (
     <div className='min-h-screen bg-background text-foreground'>
       <div className='p-4'>
