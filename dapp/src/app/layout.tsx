@@ -20,7 +20,7 @@ export const metadata: Metadata = {
   title: config.metadata.title,
   description: config.metadata.description,
   keywords: config.metadata.keywords,
-  icons: '/favicon.svg',
+  icons: '/favicon.jpg',
   manifest: '/app.webmanifest'
 };
 
