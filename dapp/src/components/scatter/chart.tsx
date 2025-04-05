@@ -27,7 +27,7 @@ export default function ScatterChart({ onPortfolioSelect }: TScatterChart) {
   const { cartItems } = useCart();
   const assetNames = useMemo(() => cartItems.map((item) => item.token.name), [cartItems]);
 
-  const { isLoading, data } = useQuery({
+  const { isLoading, data, error } = useQuery({
     queryKey: ['scatter-chart'],
     queryFn: async function () {
       const request = await fetch(`${env.NEXT_PUBLIC_PYTHON_BACKEND_URL}/markowitz-scatter`, {
@@ -41,14 +41,18 @@ export default function ScatterChart({ onPortfolioSelect }: TScatterChart) {
       });
 
       return (await request.json()) as DataPoint[];
-    }
+    },
+    enabled: assetNames.length > 0
     // refetchOnWindowFocus: false
   });
 
-  console.log('data', data);
-
   if (isLoading) {
     return <Loader className='h-[675px]' />;
+  }
+
+  if (error) {
+    console.log('CLIENT ERROR | Failed to fetch data from the API', error);
+    return <p>Something went wrong</p>;
   }
 
   return (
