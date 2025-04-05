@@ -4,6 +4,7 @@ import React, { useCallback, useState } from 'react';
 
 import { Button } from '@heroui/button';
 import { Input } from '@heroui/input';
+import { toast } from 'sonner';
 import { Address, erc20Abi } from 'viem';
 import { useWriteContract } from 'wagmi';
 
@@ -44,36 +45,67 @@ export default function CheckoutPage() {
   const [selectedPortoflio, setSelectedPortfolio] = useState<TPortfolio | null>(null);
   const [investmentAmount, setInvestmentAmount] = useState('');
 
-  const { writeContract } = useWriteContract();
+  const { writeContractAsync } = useWriteContract();
   const onPortfolioSelect = useCallback((portfolio: TPortfolio) => {
     setSelectedPortfolio(portfolio);
   }, []);
 
-  const onInvestClick = useCallback(() => {
-    const totalUSDCAmount = Number(investmentAmount) * 1000000;
-    const inputData = cartItems.map((item) => {
-      const token = item.token;
-      return {
-        tokenOut: token.contractAddress as Address,
-        amountIn: BigInt(Math.floor(selectedPortoflio![token.name]! * totalUSDCAmount)),
-        fee: token.feeTier
-      };
-    });
-    console.log(inputData);
-    writeContract({
-      address: USDC_ADDRESS,
-      abi: erc20Abi,
-      functionName: 'approve',
-      args: [CONTRACT_ADDRESS, BigInt(totalUSDCAmount)]
-    });
+  const callContract = useCallback(async () => {
+    try {
+      const totalUSDCAmount = Number(investmentAmount) * 1000000;
+      const inputData = cartItems.map((item) => {
+        const token = item.token;
+        return {
+          tokenOut: token.contractAddress as Address,
+          amountIn: BigInt(Math.floor(selectedPortoflio![token.name]! * totalUSDCAmount)),
+          fee: token.feeTier
+        };
+      });
+      console.log(inputData);
 
-    writeContract({
-      address: CONTRACT_ADDRESS,
-      abi,
-      functionName: 'executeBatchSwaps',
-      args: [BigInt(totalUSDCAmount), inputData]
+      await writeContractAsync({
+        address: USDC_ADDRESS,
+        abi: erc20Abi,
+        functionName: 'approve',
+        args: [CONTRACT_ADDRESS, BigInt(totalUSDCAmount)]
+      });
+
+      const result = await writeContractAsync({
+        address: CONTRACT_ADDRESS,
+        abi,
+        functionName: 'executeBatchSwaps',
+        args: [BigInt(totalUSDCAmount), inputData]
+      });
+
+      return result;
+    } catch (error) {
+      console.error("Errore durante l'investimento:", error);
+      throw error;
+    }
+  }, [selectedPortoflio, investmentAmount, cartItems, writeContractAsync]);
+
+  const onInvestClick = useCallback(() => {
+    toast.promise(callContract(), {
+      loading: 'Investing...',
+      success: (txHash) => {
+        const basescanUrl = `https://basescan.org/tx/${txHash}`;
+        return (
+          <div className='flex flex-col gap-2'>
+            <span>Invested successfully</span>
+            <a
+              href={basescanUrl}
+              target='_blank'
+              rel='noopener noreferrer'
+              className='text-foreground hover:underline'
+            >
+              View transaction on Basescan
+            </a>
+          </div>
+        );
+      },
+      error: 'Investment failed'
     });
-  }, [selectedPortoflio, investmentAmount, cartItems]);
+  }, [callContract]);
 
   return (
     <div className='flex h-full w-full flex-col gap-5 lg:flex-row'>
