@@ -30,7 +30,7 @@ def supported_tokens():
         page = request.args.get('page', default=1, type=int)
         page_size = request.args.get('page_size', default=20, type=int)
 
-        with open("aerodrome_uniswap_tokens.json", "r", encoding="utf-8") as f:
+        with open("tokens_sorted.json", "r", encoding="utf-8") as f:
             tokens = json.load(f)
 
         # Filter tokens so:
