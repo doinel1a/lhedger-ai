@@ -45,7 +45,7 @@ export function CartItem({ item }: CartItemProps) {
           <span className='text-xs text-muted-foreground'>Categories</span>
           <ScrollArea className='w-96 whitespace-nowrap pb-3'>
             <div className='flex w-max gap-x-1'>
-              {item.token.categories.map((category) => (
+              {item.token.categories?.map((category) => (
                 <Badge variant='secondary' className='shrink-0'>
                   {category}
                 </Badge>
