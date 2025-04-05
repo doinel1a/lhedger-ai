@@ -1,11 +1,12 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Button as HUI_Button } from '@heroui/button';
 import Link from 'next/link';
 
 import { routes } from '@/lib/constants/routes';
+import { cn } from '@/lib/utils';
 
 import LucideIcons from '../lucide-icons';
 import { useCart } from '../providers/client/cart-context';
@@ -17,11 +18,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../u
 import { CartItem } from './item';
 
 export default function CartSheet() {
+  const [isOpen, setIsOpen] = useState(false);
   const { cartItems } = useCart();
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
-
+  console.log('cartItems ', cartItems.length < 3);
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <HUI_Button variant='bordered' className='relative overflow-visible' isIconOnly>
           {itemCount > 0 && (
@@ -47,12 +49,22 @@ export default function CartSheet() {
               </div>
             </ScrollArea>
 
-            <Button color='primary' className='flex gap-x-1' asChild>
-              <Link href={routes.checkout}>
+            <Button
+              color='primary'
+              className={cn('flex gap-x-1', {
+                'pointer-events-none opacity-50': cartItems.length < 3
+              })}
+              asChild
+            >
+              <Link href={routes.checkout} onClick={() => setIsOpen(false)}>
                 <LucideIcons name='HandCoins' className='h-4 w-4' />
                 Checkout
               </Link>
             </Button>
+
+            <span className='text-center text-xs text-muted-foreground'>
+              A mininum of 3 tokens are required to checkout
+            </span>
           </div>
         ) : (
           <p className='text-lg font-semibold text-muted-foreground'>No items in cart</p>
