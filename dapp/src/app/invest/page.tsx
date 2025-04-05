@@ -1,4 +1,5 @@
 import { Button } from '@heroui/button';
+import { min } from 'd3';
 import { ArrowDown, ArrowRight, ArrowUp } from 'lucide-react';
 import millify from 'millify';
 import Image from 'next/image';
@@ -40,6 +41,7 @@ export interface TokenData {
   EXCHANGE_LIST: ExchangeItem[];
   CATEGORY_LIST: CategoryItem[];
   contract_address: ContractAddressMap;
+  uniV3FeeTier: number[];
 }
 
 type TInvestPage = {
@@ -272,7 +274,9 @@ export default async function InvestPage({ searchParams }: TInvestPage) {
                       logo: row.logo,
                       price: row.CURRENT_PRICE,
                       categories: row.CATEGORY_LIST?.map((category) => category.category_name),
-                      exchanges: row.EXCHANGE_LIST.map((exchange) => exchange.exchange_name)
+                      exchanges: row.EXCHANGE_LIST.map((exchange) => exchange.exchange_name),
+                      contractAddress: row.contract_address.base!,
+                      feeTier: min(row.uniV3FeeTier)!
                     }}
                   />
                 </TableCell>
