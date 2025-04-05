@@ -1,6 +1,6 @@
 const config = {
   metadata: {
-    title: 'LHedgfer AI',
+    title: 'LHedgrer AI',
     description:
       'Boilerplate template designed to quickly bootstrap a Next.js Decentralized App, dApp, Web3 App, Web App, SPA or website with Next.js 15, React.js 19, TypeScript, Shadcn/ui, HeroUI, TailwindCSS, RainbowKit, View, Wagmi and much more in just 30 seconds.',
     keywords:
