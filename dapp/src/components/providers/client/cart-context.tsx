@@ -8,7 +8,9 @@ export type TToken = {
   symbol: string;
   logo?: string;
   price: number;
-  categories: string[];
+  contractAddress: string;
+  feeTier: number;
+  categories?: string[];
   exchanges: string[];
 };
 
