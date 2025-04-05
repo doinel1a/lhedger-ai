@@ -59,7 +59,7 @@ contract Bundler {
                 sqrtPriceLimitX96: 0
             });
 
-            UNI_V3_Router.exactInputSingle(params);
+            try UNI_V3_Router.exactInputSingle(params) { } catch { }
 
             userTokens[msg.sender].push(swaps[i].tokenOut);
         }

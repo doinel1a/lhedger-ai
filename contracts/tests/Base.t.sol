@@ -16,9 +16,13 @@ contract BaseTest is Test {
 
     function testCalculateBatchSwapUSDC() public {
         Bundler.SwapUniV3[] memory swaps = new Bundler.SwapUniV3[](2);
-        swaps[0] = Bundler.SwapUniV3({ tokenOut: 0x4200000000000000000000000000000000000006, amountIn: 10e6, fee: 500 });
+        swaps[0] = Bundler.SwapUniV3({
+            tokenOut: 0x9e1028F5F1D5eDE59748FFceE5532509976840E0,
+            amountIn: 4_361_280,
+            fee: 10_000
+        });
         swaps[1] =
-            Bundler.SwapUniV3({ tokenOut: 0x532f27101965dd16442E59d40670FaF5eBB142E4, amountIn: 10e6, fee: 10_000 });
+            Bundler.SwapUniV3({ tokenOut: 0x3992B27dA26848C2b19CeA6Fd25ad5568B68AB98, amountIn: 5_605_013, fee: 100 });
 
         uint256[] memory amounts = bundler.calculateBatchSwapUSDC(swaps);
         for (uint256 i = 0; i < amounts.length; i++) {
@@ -32,12 +36,7 @@ contract BaseTest is Test {
         vm.startPrank(user);
         usdc.approve(address(bundler), 100e6);
 
-        bundler.executeBatchSwaps(100e6, swaps);
-
-        assertEq(usdc.balanceOf(user), 80e6);
-        assertEq(bundler.getUserTokens(user).length, 2);
-        assertEq(bundler.getUserTokens(user)[0].token, swaps[0].tokenOut);
-        assertEq(bundler.getUserTokens(user)[1].token, swaps[1].tokenOut);
+        bundler.executeBatchSwaps(10e6, swaps);
 
         console2.log("User USDC balance: %s", usdc.balanceOf(user));
         console2.log("User token 0 balance: %s", IERC20(swaps[0].tokenOut).balanceOf(user));

@@ -6,7 +6,7 @@ import { useAccount, useReadContract } from 'wagmi';
 
 import PortfolioOverview from '@/components/portfolio/overview';
 
-const CONTRACT_ADDRESS = '0x123'; // Replace with your contract address
+const CONTRACT_ADDRESS = '0x23b838A2b6B9158de82eb261a818D07EC5ab0624';
 const getUserTokensABI = [
   {
     type: 'function',
