@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 
 import { Button as HUI_Button } from '@heroui/button';
 import Link from 'next/link';
@@ -17,11 +17,12 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from '../u
 import { CartItem } from './item';
 
 export default function CartSheet() {
+  const [isOpen, setIsOpen] = useState(false);
   const { cartItems } = useCart();
   const itemCount = cartItems.reduce((total, item) => total + item.quantity, 0);
 
   return (
-    <Sheet>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetTrigger asChild>
         <HUI_Button variant='bordered' className='relative overflow-visible' isIconOnly>
           {itemCount > 0 && (
@@ -48,7 +49,7 @@ export default function CartSheet() {
             </ScrollArea>
 
             <Button color='primary' className='flex gap-x-1' asChild>
-              <Link href={routes.checkout}>
+              <Link href={routes.checkout} onClick={() => setIsOpen(false)}>
                 <LucideIcons name='HandCoins' className='h-4 w-4' />
                 Checkout
               </Link>
